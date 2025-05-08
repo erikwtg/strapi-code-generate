@@ -1,0 +1,1 @@
+# strapi-code-generate
