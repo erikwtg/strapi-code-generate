@@ -3,8 +3,8 @@
 import Input from './admin/src/components/Input';
 
 module.exports = {
-  register({ strapi }: { strapi: any }) {
-    strapi.customFields.register({
+  register({ app }: { app: any }) {
+    app.customFields.register({
       name: 'strapi-code-generator',
       plugin: 'strapi-code-generator',
       type: 'string',
