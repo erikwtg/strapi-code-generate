@@ -1,7 +1,8 @@
 import { PLUGIN_ID } from './pluginId';
 import { PluginIcon } from './components/PluginIcon';
-import { prefixPluginTranslations } from '@strapi/helper-plugin';
-import { getTranslation } from './utils/getTranslation';
+// import { prefixPluginTranslations } from '@strapi/helper-plugin';
+// import { getTranslation } from './utils/getTranslation';
+import Input from './components/Input';
 
 export default {
   register(app: any) {
@@ -15,105 +16,25 @@ export default {
       },
       icon: PluginIcon,
       components: {
-        Input: async () => import('./components/Input'),
+        Input: Input,
       },
-      options: {
-        // base: [
-        //   {
-        //     intlLabel: {
-        //       id: getTranslation('form.field.codeFormat'),
-        //       defaultMessage: 'Code Format',
-        //     },
-        //     name: 'options.code-format',
-        //     type: 'text',
-        //   },
-        //   {
-        //     sectionTitle: {
-        //       id: getTranslation('form.field.options'),
-        //       defaultMessage: 'Options',
-        //     },
-        //     items: [
-        //       {
-        //         intlLabel: {
-        //           id: getTranslation('form.field.disableAutoFill'),
-        //           defaultMessage: 'Disable Auto Fill',
-        //         },
-        //         name: 'options.disable-auto-fill',
-        //         type: 'checkbox',
-        //         description: {
-        //           id: 'form.field.disableAutoFill.description',
-        //           defaultMessage:
-        //             'Disable initial auto fill of the UUID. UUID field will be editable when this option is enabled.',
-        //         },
-        //       },
-        //       {
-        //         intlLabel: {
-        //           id: getTranslation('form.field.disableRegenerate'),
-        //           defaultMessage: 'Disable Regenerate',
-        //         },
-        //         name: 'options.disable-regenerate',
-        //         type: 'checkbox',
-        //         description: {
-        //           id: 'form.field.disableRegenerate.description',
-        //           defaultMessage: 'Disable regeneration in the UI',
-        //         },
-        //       },
-        //     ],
-        //   },
-        // ],
-        // advanced: [
-        //   {
-        //     sectionTitle: {
-        //       id: 'global.settings',
-        //       defaultMessage: 'Settings',
-        //     },
-        //     items: [
-        //       {
-        //         name: 'required',
-        //         type: 'checkbox',
-        //         intlLabel: {
-        //           id: getTranslation('form.attribute.item.requiredField'),
-        //           defaultMessage: 'Required field',
-        //         },
-        //         description: {
-        //           id: getTranslation('form.attribute.item.requiredField.description'),
-        //           defaultMessage: "You won't be able to create an entry if this field is empty",
-        //         },
-        //       },
-        //       {
-        //         name: 'private',
-        //         type: 'checkbox',
-        //         intlLabel: {
-        //           id: 'form.attribute.item.privateField',
-        //           defaultMessage: 'Private field',
-        //         },
-        //         description: {
-        //           id: 'form.attribute.item.privateField.description',
-        //           defaultMessage: 'This field will not show up in the API response',
-        //         },
-        //       },
-        //     ],
-        //   },
-        // ],
-      },
-    });
-
-    app.bootstrap(() => {
-      console.log('bootstrap');
     });
   },
 
-  async registerTrads({ locales }: { locales: string[] }) {
-    return Promise.all(
-      locales.map(async (locale) => {
-        try {
-          const { default: data } = await import(`./translations/${locale}.json`);
+  bootstrap() {},
 
-          return { data: prefixPluginTranslations(data, PLUGIN_ID), locale };
-        } catch {
-          return { data: {}, locale };
-        }
-      })
-    );
-  },
+  // async registerTrads({ locales }: { locales: string[] }) {
+  //   return Promise.all(
+  //     locales.map(async (locale) => {
+  //       try {
+  //         const { default: data } = await import(`./translations/${locale}.json`);
+
+  //         // return { data: prefixPluginTranslations(data, PLUGIN_ID), locale };
+  //         return { data: {}, locale };
+  //       } catch {
+  //         return { data: {}, locale };
+  //       }
+  //     })
+  //   );
+  // },
 };

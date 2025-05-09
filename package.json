@@ -4,7 +4,9 @@
     "strapi",
     "plugin",
     "code-generator",
-    "input-field"
+    "input-field",
+    "custom-field",
+    "strapi-plugin"
   ],
   "type": "commonjs",
   "exports": {

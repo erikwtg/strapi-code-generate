@@ -1,12 +1,9 @@
 import * as React from 'react';
-
 import { useIntl } from 'react-intl';
 import styled, { DefaultTheme } from 'styled-components';
-import { ArrowClockwise } from '@strapi/icons';
+import { ArrowClockwise, Duplicate } from '@strapi/icons';
 import { Field, TextInput, useComposedRefs } from '@strapi/design-system';
 import { FieldValue, InputProps, useFocusInputField } from '@strapi/strapi/admin';
-import { getTranslation } from '../utils/getTranslation';
-import { generateUUID, getOptions, isValidUUIDValue } from '../utils/helpers';
 
 declare module 'styled-components' {
   interface DefaultTheme {
@@ -20,28 +17,31 @@ declare module 'styled-components' {
 type TProps = InputProps &
   FieldValue & {
     labelAction?: React.ReactNode;
-    attribute?: {
-      disableAutoFill: boolean;
-      disableRegenerate: boolean;
-      uuidFormat: string;
-    };
   };
 
-export const EndAction = styled(Field.Action)`
+const ActionWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
   svg {
     path {
       fill: ${({ theme }) => theme.colors.neutral400};
     }
   }
 
-  svg:hover {
-    path {
-      fill: ${({ theme }) => theme.colors.primary600};
-    }
+  button:hover svg path {
+    fill: ${({ theme }) => theme.colors.primary600};
   }
 `;
 
-const Input = React.forwardRef<HTMLButtonElement, TProps>(
+const Input = React.forwardRef<HTMLInputElement, TProps>(
   (
     {
       hint,
@@ -54,7 +54,6 @@ const Input = React.forwardRef<HTMLButtonElement, TProps>(
       value,
       error,
       placeholder,
-      attribute,
     },
     forwardedRef
   ) => {
@@ -62,69 +61,52 @@ const Input = React.forwardRef<HTMLButtonElement, TProps>(
     const fieldRef = useFocusInputField<HTMLInputElement>(name);
     const composedRefs = useComposedRefs(forwardedRef, fieldRef);
 
-    const [fieldError, setFieldError] = React.useState<string | undefined>(error);
-
-    const { disableAutoFill, disableRegenerate, uuidFormat } = getOptions(attribute);
-
-    const getFieldError = () =>
-      formatMessage({
-        id: 'uuid.form.field.error',
-        defaultMessage: 'The UUID format is invalid.',
-      });
-
-    React.useEffect(() => {
-      if (!value && !disableAutoFill) {
-        const newUUID = generateUUID(uuidFormat);
-        onChange({ target: { value: newUUID, name } } as React.ChangeEvent<HTMLInputElement>);
+    const generateHex = () => {
+      const characters = '0123456789abcdef';
+      let result = '';
+      for (let i = 0; i < 6; i++) {
+        result += characters[Math.floor(Math.random() * characters.length)];
       }
-    }, [value, attribute]);
+      onChange({ target: { value: result, name } } as React.ChangeEvent<HTMLInputElement>);
+    };
 
-    React.useEffect(() => {
-      const isValid = isValidUUIDValue(uuidFormat, value);
-      setFieldError(!isValid ? getFieldError() : undefined);
-    }, [value]);
+    const copyToClipboard = async () => {
+      try {
+        if (value) {
+          await navigator.clipboard.writeText(value);
+        }
+      } catch (err) {
+        console.error('Failed to copy text:', err);
+      }
+    };
 
-    // Helper function to handle the onChange event
-    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = e.target;
-
-      const isValid = isValidUUIDValue(uuidFormat, value);
-      setFieldError(!isValid ? getFieldError() : undefined);
-
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       onChange(e);
     };
 
-    const handleRegenerate = () => {
-      const newUUID = generateUUID(uuidFormat);
-      onChange({ target: { value: newUUID, name } } as React.ChangeEvent<HTMLInputElement>);
-    };
-
     return (
-      <Field.Root name={name} id={name} error={fieldError} hint={hint} required={required}>
+      <Field.Root name={name} id={name} error={error} hint={hint} required={required}>
         <Field.Label action={labelAction}>{label}</Field.Label>
 
         <TextInput
           ref={composedRefs}
           aria-label={formatMessage({
-            id: getTranslation('form.label'),
-            defaultMessage: 'Strapi Code Generator',
+            id: 'hex.form.label',
+            defaultMessage: 'Hex Code Generator',
           })}
-          disabled={disabled || !disableAutoFill}
+          disabled={disabled}
           value={value}
           placeholder={placeholder}
-          onChange={handleOnChange}
+          onChange={handleChange}
           endAction={
-            !disableRegenerate && (
-              <EndAction
-                label={formatMessage({
-                  id: 'uuid.form.field.generate',
-                  defaultMessage: 'Generate',
-                })}
-                onClick={handleRegenerate}
-              >
+            <ActionWrapper>
+              <button type="button" aria-label="Generate" onClick={generateHex}>
                 <ArrowClockwise />
-              </EndAction>
-            )
+              </button>
+              <button type="button" aria-label="Copy" onClick={copyToClipboard}>
+                <Duplicate />
+              </button>
+            </ActionWrapper>
           }
         />
 
