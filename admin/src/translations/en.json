@@ -1,3 +1,6 @@
 {
-  "strapi-code-generator.plugin.name": "Strapi Code Generator"
+  "input-code-generator.plugin.name": "Input code generator",
+  "input-code-generator.plugin.description": "Input code generator",
+  "input-code-generator.form.label": "Input code generator",
+  "input-code-generator.form.error": "The input code generator is invalid."
 }

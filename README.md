@@ -1,3 +1,3 @@
-# strapi-code-generator
+# input-code-generator
 
-Input field with automatic code generation
+Plugin to add input with automatic code generator

@@ -1,1 +1,1 @@
-export const PLUGIN_ID = 'strapi-code-generator';
+export const PLUGIN_ID = 'input-code-generator';
